@@ -52,9 +52,8 @@ export function Sidebar() {
           {
             "px-3": open,
             "px-1": !open,
-          }
-        )}
-      >
+          },
+        )}>
         {menuItems.map((item: TreeMenuItem) => (
           <SidebarItem
             key={item.key || item.name}
@@ -112,9 +111,8 @@ function SidebarItemGroup({ item, selectedKey }: MenuItemProps) {
             "opacity-100": open,
             "pointer-events-none": !open,
             "pointer-events-auto": open,
-          }
-        )}
-      >
+          },
+        )}>
         {getDisplayName(item)}
       </span>
       {children && children.length > 0 && (
@@ -144,7 +142,7 @@ function SidebarItemCollapsible({ item, selectedKey }: MenuItemProps) {
         "text-muted-foreground",
         "transition-transform",
         "duration-200",
-        "group-data-[state=open]:rotate-90"
+        "group-data-[state=open]:rotate-90",
       )}
     />
   );
@@ -187,8 +185,7 @@ function SidebarItemDropdown({ item, selectedKey }: MenuItemProps) {
                 to={child.route || ""}
                 className={cn("flex w-full items-center gap-2", {
                   "bg-accent text-accent-foreground": isSelected,
-                })}
-              >
+                })}>
                 <ItemIcon
                   icon={child.meta?.icon ?? child.icon}
                   isSelected={isSelected}
@@ -223,9 +220,8 @@ function SidebarHeader() {
         "flex-row",
         "items-center",
         "justify-between",
-        "overflow-hidden"
-      )}
-    >
+        "overflow-hidden",
+      )}>
       <div
         className={cn(
           "whitespace-nowrap",
@@ -240,22 +236,21 @@ function SidebarHeader() {
           {
             "pl-3": !open,
             "pl-5": open,
-          }
-        )}
-      >
+          },
+        )}>
         <div>{title.icon}</div>
         <h2
           className={cn(
-            "text-sm",
-            "font-bold",
+            "text-xl",
+            "font-medium",
+            "tracking-wide",
             "transition-opacity",
             "duration-200",
             {
               "opacity-0": !open,
               "opacity-100": open,
-            }
-          )}
-        >
+            },
+          )}>
           {title.text}
         </h2>
       </div>
@@ -287,8 +282,7 @@ function ItemIcon({ icon, isSelected }: IconProps) {
       className={cn("w-4", {
         "text-muted-foreground": !isSelected,
         "text-sidebar-primary-foreground": isSelected,
-      })}
-    >
+      })}>
       {icon ?? <ListIcon />}
     </div>
   );
@@ -326,8 +320,7 @@ function SidebarButton({
           "font-semibold": isSelected,
           "text-sidebar-primary-foreground": isSelected,
           "text-foreground": !isSelected,
-        })}
-      >
+        })}>
         {getDisplayName(item)}
       </span>
       {rightIcon}
@@ -347,11 +340,10 @@ function SidebarButton({
           "text-sidebar-primary-foreground": isSelected,
           "hover:text-sidebar-primary-foreground": isSelected,
         },
-        className
+        className,
       )}
       onClick={onClick}
-      {...props}
-    >
+      {...props}>
       {asLink && item.route ? (
         <Link to={item.route} className={cn("flex w-full items-center gap-2")}>
           {buttonContent}

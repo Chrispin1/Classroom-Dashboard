@@ -22,6 +22,7 @@ export const Header = () => {
 };
 
 function DesktopHeader() {
+  const { open } = useSidebar();
   return (
     <header
       className={cn(
@@ -36,12 +37,19 @@ function DesktopHeader() {
         "border-border",
         "bg-sidebar",
         "pr-3",
-        "justify-end",
-        "z-40"
-      )}
-    >
-      <ThemeToggle />
-      <UserDropdown />
+        "justify-between",
+        "z-40",
+      )}>
+      <SidebarTrigger
+        className={cn("text-muted-foreground", "ml-3", {
+          "opacity-0": open,
+          "opacity-100": !open,
+        })}
+      />
+      <div className={cn("flex", "items-center", "gap-4")}>
+        <ThemeToggle />
+        <UserDropdown />
+      </div>
     </header>
   );
 }
@@ -66,9 +74,8 @@ function MobileHeader() {
         "bg-sidebar",
         "pr-3",
         "justify-between",
-        "z-40"
-      )}
-    >
+        "z-40",
+      )}>
       <SidebarTrigger
         className={cn("text-muted-foreground", "rotate-180", "ml-1", {
           "opacity-0": open,
@@ -92,11 +99,10 @@ function MobileHeader() {
           {
             "pl-3": !open,
             "pl-5": open,
-          }
-        )}
-      >
+          },
+        )}>
         <div>{title.icon}</div>
-        <h2
+        <h1
           className={cn(
             "text-sm",
             "font-bold",
@@ -105,11 +111,10 @@ function MobileHeader() {
             {
               "opacity-0": !open,
               "opacity-100": open,
-            }
-          )}
-        >
+            },
+          )}>
           {title.text}
-        </h2>
+        </h1>
       </div>
 
       <ThemeToggle className={cn("h-8", "w-8")} />
@@ -135,8 +140,7 @@ const UserDropdown = () => {
         <DropdownMenuItem
           onClick={() => {
             logout();
-          }}
-        >
+          }}>
           <LogOutIcon
             className={cn("text-destructive", "hover:text-destructive")}
           />
