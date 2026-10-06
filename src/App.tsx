@@ -20,7 +20,7 @@ import { SubjectCreate } from "./pages/subjects/create";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/Classroom-Dashboard">
       <RefineKbarProvider>
         <ThemeProvider>
           <DevtoolsProvider>
