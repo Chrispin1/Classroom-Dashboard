@@ -20,7 +20,7 @@ import { SubjectCreate } from "./pages/subjects/create";
 
 function App() {
   return (
-    <BrowserRouter basename="/Classroom-Dashboard">
+    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, "")}>
       <RefineKbarProvider>
         <ThemeProvider>
           <DevtoolsProvider>
