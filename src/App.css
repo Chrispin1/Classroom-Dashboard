@@ -202,6 +202,14 @@
     @apply flex flex-col gap-3 sm:flex-row sm:gap-2 w-full sm:w-auto;
   }
 
+  .subjects-subheading {
+    @apply font-medium text-xl md:text-2xl;
+  }
+
+  .column-title {
+    @apply flex items-center gap-1 font-bold;
+  }
+
   .search-field {
     @apply relative w-full max-h-9 md:max-w-72;
 
