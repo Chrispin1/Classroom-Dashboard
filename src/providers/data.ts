@@ -6,23 +6,24 @@ const options: CreateDataProviderOptions = {
   getList: {
     getEndpoint: ({ resource }) => resource,
 
-    buildQueryParams: async ({ filters, pagination }) => {
-      const searchFilter = (filters ?? []).find(
-        (f) => "field" in f && f.field === "name" && f.operator === "contains",
-      );
-      const departmentFilter = (filters ?? []).find(
-        (f) => "field" in f && f.field === "department",
-      );
-
+    buildQueryParams: async ({ resource, pagination, filters }) => {
       const page = pagination?.currentPage ?? 1;
-      const limit = pagination?.pageSize ?? 10;
+      const pageSize = pagination?.pageSize ?? 10;
 
-      return {
-        ...(searchFilter ? { search: String(searchFilter.value) } : {}),
-        ...(departmentFilter ? { department: String(departmentFilter.value) } : {}),
-        page,
-        limit,
-      };
+      const params: Record<string, string | number> = { page, limit: pageSize };
+
+      filters?.forEach((filter) => {
+        const field = "field" in filter ? filter.field : "";
+
+        const value = String(filter.value);
+
+        if (resource === "subjects") {
+          if (field === "department") params.department = value;
+          if (field === "name" || field === "code") params.department = value;
+        }
+      });
+
+      return params;
     },
 
     mapResponse: async (response) => {
