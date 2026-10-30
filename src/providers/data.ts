@@ -1,38 +1,44 @@
-import { MOCK_SUBJECTS } from "@/constants/mock-subjects";
-import {
-  BaseRecord,
-  DataProvider,
-  GetListParams,
-  GetListResponse,
-} from "@refinedev/core";
+import { BACKEND_BASE_URL } from "@/constants";
+import { ListResponse } from "@/types";
+import { createDataProvider, CreateDataProviderOptions } from "@refinedev/rest";
 
-export const dataProvider: DataProvider = {
-  getList: async <TData extends BaseRecord = BaseRecord>({
-    resource,
-  }: GetListParams): Promise<GetListResponse<TData>> => {
-    if (resource !== "subjects") {
-      return { data: [] as TData[], total: 0 };
-    }
+const options: CreateDataProviderOptions = {
+  getList: {
+    getEndpoint: ({ resource }) => resource,
 
-    //to be filled with actual data
-    return {
-      data: MOCK_SUBJECTS as unknown as TData[],
-      total: MOCK_SUBJECTS.length,
-    };
-  },
+    buildQueryParams: async ({ filters, pagination }) => {
+      const searchFilter = (filters ?? []).find(
+        (f) => "field" in f && f.field === "name" && f.operator === "contains",
+      );
+      const departmentFilter = (filters ?? []).find(
+        (f) => "field" in f && f.field === "department",
+      );
 
-  getOne: async () => {
-    throw new Error("This function is not present in mock data");
-  },
-  create: async () => {
-    throw new Error("This function is not present in mock data");
-  },
-  update: async () => {
-    throw new Error("This function is not present in mock data");
-  },
-  deleteOne: async () => {
-    throw new Error("This function is not present in mock data");
-  },
+      const page = pagination?.currentPage ?? 1;
+      const limit = pagination?.pageSize ?? 10;
 
-  getApiUrl: () => "",
+      return {
+        ...(searchFilter ? { search: String(searchFilter.value) } : {}),
+        ...(departmentFilter ? { department: String(departmentFilter.value) } : {}),
+        page,
+        limit,
+      };
+    },
+
+    mapResponse: async (response) => {
+      const payLoad: ListResponse = await response.json();
+
+      return payLoad.data ?? [];
+    },
+
+    getTotalCount: async (response) => {
+      const payload: ListResponse = await response.json();
+
+      return payload.pagination?.total ?? payload.data?.length ?? 0;
+    },
+  },
 };
+
+const { dataProvider } = createDataProvider(BACKEND_BASE_URL, options);
+
+export { dataProvider };
