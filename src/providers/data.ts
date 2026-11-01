@@ -2,6 +2,10 @@ import { BACKEND_BASE_URL } from "@/constants";
 import { ListResponse } from "@/types";
 import { createDataProvider, CreateDataProviderOptions } from "@refinedev/rest";
 
+if (!BACKEND_BASE_URL)
+  throw new Error(
+    "BACKEND_BASE_URL is not configured. Please set BACKEND_BASE_URL in your .env file",
+  );
 const options: CreateDataProviderOptions = {
   getList: {
     getEndpoint: ({ resource }) => resource,
@@ -10,7 +14,10 @@ const options: CreateDataProviderOptions = {
       const page = pagination?.currentPage ?? 1;
       const pageSize = pagination?.pageSize ?? 10;
 
-      const params: Record<string, string | number> = { page, limit: pageSize };
+      const params: Record<string, string | number> = {
+        page,
+        limit: pageSize,
+      };
 
       filters?.forEach((filter) => {
         const field = "field" in filter ? filter.field : "";
@@ -19,7 +26,7 @@ const options: CreateDataProviderOptions = {
 
         if (resource === "subjects") {
           if (field === "department") params.department = value;
-          if (field === "name" || field === "code") params.department = value;
+          if (field === "name" || field === "code") params.search = value;
         }
       });
 
@@ -27,15 +34,15 @@ const options: CreateDataProviderOptions = {
     },
 
     mapResponse: async (response) => {
-      const payLoad: ListResponse = await response.json();
+      const payLoad: ListResponse = await response.clone().json();
 
       return payLoad.data ?? [];
     },
 
     getTotalCount: async (response) => {
-      const payload: ListResponse = await response.json();
+      const payLoad: ListResponse = await response.clone().json();
 
-      return payload.pagination?.total ?? payload.data?.length ?? 0;
+      return payLoad.pagination?.total ?? payLoad.data?.length ?? 0;
     },
   },
 };
